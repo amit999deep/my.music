@@ -8,29 +8,39 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="music1.css">
+    <link rel="stylesheet" href="animations.css">
 </head>
 
 <body>
+    <div class="bubble-container"></div>
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div class="app-container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo" onclick="showAlert()" style="cursor: pointer;">
-                <i class="fas fa-music"></i>
-                <span>My Music</span>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo" onclick="showAlert()" style="cursor: pointer;">
+                    <i class="fas fa-music"></i>
+                    <span>My Music</span>
+                </div>
+                <i class="fas fa-times close-sidebar" onclick="toggleSidebar()"></i>
             </div>
 
             <div class="nav-menu">
                 <ul>
-                    <li class="active"><i class="fas fa-home"></i> <span>Home</span></li>
-                    <li onclick="showAlert()"><i class="fas fa-search"></i> <span>Search</span></li>
-                    <li onclick="showAlert()"><i class="fas fa-book"></i> <span>Your Library</span></li>
+                    <li class="active" onclick="showSection('home')"><i class="fas fa-home"></i> <span>Home</span></li>
+                    <li onclick="showSection('search')"><i class="fas fa-search"></i> <span>Search</span></li>
+                    <li onclick="showSection('library')"><i class="fas fa-book"></i> <span>Your
+                            Library</span></li>
                 </ul>
             </div>
 
             <div class="nav-menu">
                 <ul>
-                    <li onclick="showAlert()"><i class="fas fa-plus-square"></i> <span>Create Playlist</span></li>
-                    <li onclick="showAlert()"><i class="fas fa-heart"></i> <span>Liked Songs</span></li>
+                    <li onclick="createNewPlaylist()"><i class="fas fa-plus-square"></i>
+                        <span>Create Playlist</span>
+                    </li>
+                    <li onclick="showSection('liked')"><i class="fas fa-heart"></i> <span>Liked
+                            Songs</span></li>
                 </ul>
             </div>
 
@@ -43,53 +53,67 @@
         <!-- Main Content -->
         <div class="main-content">
             <header>
-                <div class="nav-buttons">
-                    <button onclick="showAlert()"><i class="fas fa-chevron-left"></i></button>
-                    <button onclick="showAlert()"><i class="fas fa-chevron-right"></i></button>
+                <div class="header-left">
+                    <div class="menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div class="nav-buttons">
+                        <button onclick="showToast('History navigation disabled')"><i
+                                class="fas fa-chevron-left"></i></button>
+                        <button onclick="showToast('History navigation disabled')"><i
+                                class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="What do you want to listen to?">
+                    </div>
                 </div>
                 <div class="user-menu">
-                    <button class="sign-up" onclick="showAlert()">Sign up</button>
-                    <button class="login" onclick="showAlert()">Log in</button>
+                    <button class="login" onclick="openLoginModal()">Log In</button>
                 </div>
             </header>
 
             <div class="content-spacing">
-                <h2>Good evening</h2>
-                <div class="cards-container">
-                    <!-- Card 1 -->
-                    <div class="card" onclick="playSong(0)">
-                        <div class="album-art" style="background-image: url('cover1.png');">
-                            <i class="fas fa-play play-btn"></i>
-                        </div>
-                        <h3>Don't Even Text</h3>
-                        <p>Tsumyoki x Gini</p>
-                    </div>
+                <div id="search-results-section" style="display: none;">
+                    <h2>Search Results</h2>
+                    <div class="cards-container" id="search-results-container"></div>
+                </div>
 
-                    <!-- Card 2 -->
-                    <div class="card" onclick="playSong(1)">
-                        <div class="album-art" style="background-image: url('cover2.png');">
-                            <i class="fas fa-play play-btn"></i>
-                        </div>
-                        <h3>See You Again</h3>
-                        <p>Wiz Khalifa</p>
+                <div id="default-sections">
+                    <h2 class="welcome-header">Good evening</h2>
+                    <div class="cards-container" id="featured-cards-container">
+                        <!-- Dynamic content will go here -->
                     </div>
+                </div>
 
-                    <!-- Card 3 -->
-                    <div class="card" onclick="playSong(2)">
-                        <div class="album-art" style="background-image: url('cover3.png');">
-                            <i class="fas fa-play play-btn"></i>
-                        </div>
-                        <h3>Sapphire</h3>
-                        <p>Ed Sheeran</p>
+                <div id="library-section" style="display: none;">
+                    <h2>Your Library</h2>
+                    <div class="cards-container" id="library-container">
+                        <!-- Playlists will go here -->
                     </div>
+                </div>
 
-                    <!-- Card 4 -->
-                    <div class="card" onclick="playSong(3)">
-                        <div class="album-art" style="background-image: url('cover4.png');">
-                            <i class="fas fa-play play-btn"></i>
+                <div id="liked-section" style="display: none;">
+                    <h2>Liked Songs</h2>
+                    <div class="cards-container" id="liked-container">
+                        <!-- Liked songs will go here -->
+                        <p style="color: #b3b3b3; font-size: 14px;">No liked songs yet.</p>
+                    </div>
+                </div>
+
+                <div id="playlist-detail-section" style="display: none;">
+                    <div class="playlist-header-detail">
+                        <div class="playlist-art-large">
+                            <i class="fas fa-music"></i>
                         </div>
-                        <h3>Perfect</h3>
-                        <p>Ed Sheeran</p>
+                        <div class="playlist-info-detail">
+                            <p>Playlist</p>
+                            <h2 id="playlist-detail-title">Playlist Name</h2>
+                            <p id="playlist-detail-stats">0 songs</p>
+                        </div>
+                    </div>
+                    <div class="cards-container" id="playlist-songs-container">
+                        <!-- Songs will be injected here -->
                     </div>
                 </div>
             </div>
@@ -104,18 +128,21 @@
                 <h4 id="current-title">Select a song</h4>
                 <p id="current-artist">...</p>
             </div>
-            <i class="far fa-heart like-icon" onclick="showAlert()"></i>
+            <i class="far fa-heart like-icon" id="like-btn" onclick="toggleLike()"></i>
+            <i class="fas fa-plus plus-icon" id="add-to-playlist-master" onclick="addCurrentToPlaylist()"
+                title="Add current to Playlist"
+                style="margin-left: 15px; cursor: pointer; color: #b3b3b3; transition: color 0.2s;"></i>
         </div>
 
         <div class="player-center">
             <div class="player-controls">
-                <i class="fas fa-random" title="Shuffle" onclick="showAlert()"></i>
+                <i class="fas fa-random" id="shuffle-btn" title="Shuffle" onclick="toggleShuffle()"></i>
                 <i class="fas fa-step-backward" onclick="prevSong()" title="Previous"></i>
                 <div class="play-pause-btn" onclick="togglePlay()">
                     <i class="fas fa-play-circle" id="master-play"></i>
                 </div>
                 <i class="fas fa-step-forward" onclick="nextSong()" title="Next"></i>
-                <i class="fas fa-redo-alt" title="Repeat" onclick="showAlert()"></i>
+                <i class="fas fa-redo-alt" id="repeat-btn" title="Repeat" onclick="toggleRepeat()"></i>
             </div>
             <div class="progress-container">
                 <span id="current-time">0:00</span>
@@ -125,33 +152,59 @@
         </div>
 
         <div class="player-right">
-            <i class="fas fa-microphone" onclick="showAlert()"></i>
-            <i class="fas fa-list" onclick="showAlert()"></i>
-            <i class="fas fa-laptop-house" onclick="showAlert()"></i>
+            <i class="fas fa-microphone" onclick="showToast('Lyrics coming soon!')"></i>
+            <i class="fas fa-list" onclick="showToast('Queue opened')"></i>
+            <i class="fas fa-laptop-house" onclick="showToast('Connect to a device')"></i>
             <div class="volume-container">
-                <i class="fas fa-volume-up" onclick="showAlert()"></i>
-                <input type="range" id="volume-bar" min="0" max="1">
+                <i class="fas fa-volume-up" id="volume-icon" onclick="toggleMute()"></i>
+                <input type="range" id="volume-bar" min="0" max="1" step="0.01">
             </div>
         </div>
     </div>
 
-    <!-- Mobile Navigation -->
-    <div class="mobile-nav">
-        <div class="mobile-nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </div>
-        <div class="mobile-nav-item" onclick="showAlert()">
-            <i class="fas fa-search"></i>
-            <span>Search</span>
-        </div>
-        <div class="mobile-nav-item" onclick="showAlert()">
-            <i class="fas fa-book"></i>
-            <span>Library</span>
+
+
+    <audio id="audio-player"></audio>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Log In</h2>
+                <i class="fas fa-times close-modal" onclick="closeLoginModal()"></i>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="email">Email or username</label>
+                    <input type="text" id="email" placeholder="Email or username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-submit">Log In</button>
+            </form>
+            <div class="modal-footer">
+                <a href="#" onclick="showToast('Password reset link sent!')">Forgot your password?</a>
+                <hr>
+                <p>Login and enjoy free music</p>
+            </div>
         </div>
     </div>
 
-    <audio id="audio-player"></audio>
+    <!-- Playlist Choice Modal -->
+    <div id="playlist-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 350px;">
+            <div class="modal-header">
+                <h2>Add to Playlist</h2>
+                <i class="fas fa-times close-modal" onclick="closePlaylistModal()"></i>
+            </div>
+            <div id="playlist-choices" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Playlists will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
     <script src="java.js"></script>
 </body>
 
